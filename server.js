@@ -2,6 +2,7 @@
 import express from "express";
 import cors from "cors"; // consumir api
 import { sequelize } from "./src/models/index.js"; // ORM
+import itemRoutes from "./src/routes/itemRoutes.js"; //Rutas
 
 
 const app = express();
@@ -13,7 +14,7 @@ app.use(express.json());
 
 
 // Rutas API
-// app.use("/api/items", itemRoutes);
+app.use("/api/items", itemRoutes);
 
 
 
