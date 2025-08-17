@@ -1,24 +1,31 @@
-import {Item} from "../models/index.js";
+import { Op } from "sequelize";
+import { Item } from "../models/index.js";
 
+// GET /api/items (con buscador opcional)
+export const getAllItems = async (req, res) => {
+  try {
+    const { q } = req.query;
 
-
-// Get/api/items
-export const getAllItems= async (req, res)=>{
-
-    try{
-        const items= await Item.findAll();
-        res.json(items);
-    }catch(error){
-        res.status(500).json({error:"Error al obtener los artículos"});
+    let whereClause = {};
+    if (q) {
+      whereClause = {
+        [Op.or]: [
+          { name: { [Op.like]: `%${q}%` } },
+          { description: { [Op.like]: `%${q}%` } },
+        ],
+      };
     }
 
-    
-}
+    const items = await Item.findAll({ where: whereClause });
+    res.json(items);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener los artículos" });
+  }
+};
 
-// Get/api/items/:id
-export const getItemById = async (req, res)=>{
-
-try {
+// GET /api/items/:id
+export const getItemById = async (req, res) => {
+  try {
     const { id } = req.params;
     const item = await Item.findByPk(id);
 
@@ -30,17 +37,12 @@ try {
   } catch (err) {
     res.status(500).json({ error: "Error al obtener el artículo" });
   }
+};
 
-    
-}
-
-
-// Post/api/items
+// POST /api/items
 export const createItem = async (req, res) => {
-
   try {
     const { code, name, description, qty, price } = req.body;
-
     const photo = req.file ? `/uploads/${req.file.filename}` : null;
 
     const newItem = await Item.create({
@@ -58,8 +60,7 @@ export const createItem = async (req, res) => {
   }
 };
 
-// PUT /api/items
-
+// PUT /api/items/:id
 export const updateItem = async (req, res) => {
   try {
     const { id } = req.params;
@@ -80,8 +81,7 @@ export const updateItem = async (req, res) => {
   }
 };
 
-
-//DELETE /api/items/:id
+// DELETE /api/items/:id
 export const deleteItem = async (req, res) => {
   try {
     const { id } = req.params;
@@ -97,4 +97,3 @@ export const deleteItem = async (req, res) => {
     res.status(500).json({ error: "Error al eliminar el artículo" });
   }
 };
-

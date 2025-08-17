@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sistema de Inventario</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="./styles.css" rel="stylesheet" />
+  <!-- Agregando iconos de Lucide para mejor UX -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+  <!-- Header rediseñado con gradiente y mejor layout -->
+  <header class="topbar">
+    <div class="header-content">
+      <div class="logo-section">
+        <div class="logo-icon">
+          <i data-lucide="package"></i>
+        </div>
+        <h1>Sistema de Inventario</h1>
+      </div>
+      <div class="search">
+        <div class="search-input-wrapper">
+          <i data-lucide="search" class="search-icon"></i>
+          <input id="searchInput" type="text" placeholder="Buscar productos..." />
+        </div>
+        <button id="searchBtn" class="btn-primary">
+          <i data-lucide="search"></i>
+          Buscar
+        </button>
+        <button id="clearBtn" class="btn-secondary">
+          <i data-lucide="x"></i>
+          Limpiar
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Sección de estadísticas agregada -->
+    <section class="stats-section">
+      <div class="stat-card">
+        <div class="stat-icon primary">
+          <i data-lucide="package"></i>
+        </div>
+        <div class="stat-content">
+          <h3 id="totalItems">0</h3>
+          <p>Total Productos</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon success">
+          <i data-lucide="trending-up"></i>
+        </div>
+        <div class="stat-content">
+          <h3 id="totalValue">$0</h3>
+          <p>Valor Total</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon warning">
+          <i data-lucide="alert-triangle"></i>
+        </div>
+        <div class="stat-content">
+          <h3 id="lowStock">0</h3>
+          <p>Stock Bajo</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card table-card">
+      <!-- Header de tabla mejorado con acciones -->
+      <div class="card-header">
+        <h2>
+          <i data-lucide="list"></i>
+          Listado de Productos
+        </h2>
+        <button id="addNewBtn" class="btn-primary">
+          <i data-lucide="plus"></i>
+          Nuevo Producto
+        </button>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Imagen</th>
+              <th>Código</th>
+              <th>Producto</th>
+              <th>Descripción</th>
+              <th>Stock</th>
+              <th>Precio</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="itemsTbody">
+            <!-- filas dinámicas -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Formulario rediseñado con mejor organización -->
+    <section class="card form-card">
+      <div class="card-header">
+        <h2 id="formTitle">
+          <i data-lucide="plus-circle"></i>
+          Crear Producto
+        </h2>
+      </div>
+      <form id="itemForm">
+        <input type="hidden" id="itemId" />
+
+        <!-- Sección de información básica -->
+        <div class="form-section">
+          <h3>Información Básica</h3>
+          <div class="grid">
+            <div class="field">
+              <label for="code">
+                <i data-lucide="hash"></i>
+                Código del Producto
+              </label>
+              <input id="code" name="code" type="text" required placeholder="Ej: PROD001" />
+            </div>
+            <div class="field">
+              <label for="name">
+                <i data-lucide="tag"></i>
+                Nombre del Producto
+              </label>
+              <input id="name" name="name" type="text" required placeholder="Nombre del producto" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección de inventario -->
+        <div class="form-section">
+          <h3>Inventario y Precios</h3>
+          <div class="grid">
+            <div class="field">
+              <label for="qty">
+                <i data-lucide="package"></i>
+                Cantidad en Stock
+              </label>
+              <input id="qty" name="qty" type="number" min="0" step="1" required placeholder="0" />
+            </div>
+            <div class="field">
+              <label for="price">
+                <i data-lucide="dollar-sign"></i>
+                Precio Unitario
+              </label>
+              <input id="price" name="price" type="number" min="0" step="0.01" required placeholder="0.00" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección de descripción -->
+        <div class="form-section">
+          <div class="field">
+            <label for="description">
+              <i data-lucide="file-text"></i>
+              Descripción del Producto
+            </label>
+            <textarea id="description" name="description" rows="3" placeholder="Describe las características del producto..."></textarea>
+          </div>
+        </div>
+
+        <!-- Sección de imagen mejorada -->
+        <div class="form-section">
+          <div class="field">
+            <label for="photo">
+              <i data-lucide="image"></i>
+              Imagen del Producto
+            </label>
+            <div class="file-upload-area" id="fileUploadArea">
+              <input id="photo" name="photo" type="file" accept="image/*" />
+              <div class="upload-placeholder">
+                <i data-lucide="upload"></i>
+                <p>Arrastra una imagen aquí o <span>haz clic para seleccionar</span></p>
+                <small>PNG, JPG, GIF hasta 10MB</small>
+              </div>
+              <div class="preview">
+                <img id="photoPreview" alt="Vista previa" />
+                <button type="button" id="removePhoto" class="remove-photo">
+                  <i data-lucide="x"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones de acción mejorados -->
+        <div class="actions">
+          <button type="submit" id="submitBtn" class="btn-outline">
+            <i data-lucide="save"></i>
+            Guardar Producto
+          </button>
+          <button type="button" id="cancelEditBtn" class="btn-outline hidden">
+            <i data-lucide="x"></i>
+            Cancelar Edición
+          </button>
+          <button type="reset" class="btn-outline">
+            <i data-lucide="refresh-cw"></i>
+            Limpiar Formulario
+          </button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <!-- Modal de confirmación agregado -->
+  <div id="confirmModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">Confirmar Acción</h3>
+        <button id="closeModal" class="close-modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="modalMessage">¿Estás seguro de que deseas realizar esta acción?</p>
+      </div>
+      <div class="modal-actions">
+        <button id="confirmAction" class="btn-danger">
+          <i data-lucide="trash-2"></i>
+          Confirmar
+        </button>
+        <button id="cancelAction" class="btn-secondary">
+          <i data-lucide="x"></i>
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./app.js" defer></script>
+  <!-- Inicializar iconos de Lucide -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
